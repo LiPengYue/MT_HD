@@ -40,7 +40,6 @@ static NSString * const CELLID = @"CELLID";
         _itemNum_horizontal = 3;//竖屏的个数
         _itemSizeW = 305;//item 宽
         _itemSizeH = 305;//item高
-     
         self = [self initWithCollectionViewLayout:flowLayout];
     }
     return self;
@@ -60,10 +59,10 @@ static NSString * const CELLID = @"CELLID";
     self.collectionView.backgroundColor = MTColor(222, 222, 222);
     
     //这里不能在View上面加 view 只能在collctionView里面
-//    [self.view addSubview:self.noDataImage];
-//    [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.center.equalTo(self.view);
-//    }];
+    [self.view addSubview:self.noDataImage];
+    [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+    }];
     
     //因为用了self.View 了所以懒加载的view 已经创建
     self.modelArray = [[NSMutableArray alloc]init];
@@ -74,9 +73,6 @@ static NSString * const CELLID = @"CELLID";
     //强调用一波将要横竖屏的方法
     [self viewWillTransitionToSize:CGSizeMake(kScreenW, kScreenH) withTransitionCoordinator:self.transitionCoordinator];
 }
-
-
-
 
 
 #pragma mark - 将要横屏竖屏
@@ -106,7 +102,6 @@ static NSString * const CELLID = @"CELLID";
         layout.minimumLineSpacing = _itemMagen_horizontal;
     }
 }
-
 
 
 - (void)didReceiveMemoryWarning {
@@ -167,16 +162,16 @@ static NSString * const CELLID = @"CELLID";
 - (UIImageView *)noDataImage {
     if (!_noDataImage) {
         _noDataImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_deals_empty"]];
-        _noDataImage.hidden = true;
+        _noDataImage.hidden = false;
     }
     return _noDataImage;
 }
 
 #pragma mark - 是否隐藏noDataImage
-//-(void)setHiddenNoDataImage:(BOOL)hiddenNoDataImage{
-//    _hiddenNoDataImage = hiddenNoDataImage;
-//    self.noDataImage.hidden = false;
-//}
+-(void)setHiddenNoDataImage:(BOOL)hiddenNoDataImage{
+    _hiddenNoDataImage = hiddenNoDataImage;
+    self.noDataImage.hidden = false;
+}
 
 @end
 

@@ -10,5 +10,5 @@
 @class MTHomeCellModel;
 @interface MTHomeCollectionVC : UICollectionViewController
 @property (nonatomic,strong) NSMutableArray <MTHomeCellModel *> *modelArray;
-//@property (nonatomic,assign) BOOL hiddenNoDataImage;
+@property (nonatomic,assign) BOOL hiddenNoDataImage;
 @end

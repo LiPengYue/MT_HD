@@ -61,7 +61,6 @@
     [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
     }];
-
 }
 
 
@@ -145,7 +144,9 @@
 - (void)setCollectionVC {
     MTHomeCollectionVC * homeCollectionVC = [[MTHomeCollectionVC alloc]init];
     self.homeCollectionVC = homeCollectionVC;
-    [self.view addSubview:homeCollectionVC.collectionView];
+    //MARK: 必须要
+//    [self.view addSubview:homeCollectionVC.collectionView];
+    [self.view addSubview:homeCollectionVC.view];
     [self addChildViewController:homeCollectionVC];
     [homeCollectionVC didMoveToParentViewController:self];
     homeCollectionVC.collectionView.frame = self.view.frame;
