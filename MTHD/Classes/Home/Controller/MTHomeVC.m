@@ -20,7 +20,6 @@
 #import "MJRefresh.h"
 #import "MTSortModel.h"
 #import "AwesomeMenu.h"
-#import "AwesomeMenuItem.h"
 
 @interface MTHomeVC () <AwesomeMenuDelegate>
 @property (nonatomic,strong) MTHomeNACView *categoryView;//分组
@@ -37,7 +36,7 @@
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 
-//@property (nonatomic,strong) UIImageView *noDataImage;
+@property (nonatomic,strong) UIImageView *noDataImage;
 
 @property (nonatomic,weak) MTHomeCollectionVC *homeCollectionVC;
 @end
@@ -49,10 +48,9 @@
     [self setupUI];
 }
 
-
-
 #pragma mark - 搭建UI界面
 - (void)setupUI{
+    
     //设置出事值
     self.selectCity = @"北京";
     
@@ -61,13 +59,14 @@
     [self observeNotification];//监听通知的方法
     [self loadDate];//加载数据
     [self setupRefresh];//加动画
-    [self setupMenu];//天价菜单
+    [self setupMenu];//添加菜单
+    
 //    [self.view addSubview:self.noDataImage];
 //    [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.center.equalTo(self.view);
 //    }];
-}
 
+}
 
 
 #pragma mark - loadDate
@@ -100,6 +99,7 @@
     //分页
     params[@"page"] = @(self.page);
     
+    
     NSLog(@"%@",params);
     
     [[MTHomeViewModel sharedHomeViewModel] loadHomeNetDataWithCityName:params andModelArrayBlock:^(BOOL isSucceed, NSArray<MTHomeCellModel *> *modelArray) {
@@ -114,7 +114,7 @@
              self.homeCollectionVC.modelArray = self.dataArray;
         }
         //判断是否隐藏collctionView的NoDataImage
-        self.homeCollectionVC.hiddenNoDataImage = self.dataArray.count;
+        self.homeCollectionVC.hiddenNoDataImage = !self.dataArray.count;
 //        self.noDataImage.hidden = self.dataArray.count;
         
         //结束加载
@@ -124,43 +124,44 @@
 }
 
 
-
 #pragma mark - refrech
 - (void)setupRefresh{
 //    self.collectionView.mj_header = [MJRefreshHeader headerWithRefreshingBlock:^{
 //        
 //    }];
     //yao
-    self.homeCollectionVC.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.page = 1;
-        [self loadDate];
-    }];
-    
-    self.homeCollectionVC.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//    self.homeCollectionVC.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+//        self.page = 1;
+//        [self loadDate];
+//    }];
+//    
+//    self.homeCollectionVC.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//        self.page ++;
+//        [self loadDate];
+//    }];
+//    
+//    [self.homeCollectionVC.collectionView.mj_header beginRefreshing];
+    [self.homeCollectionVC setMj_footerBlock:^{
         self.page ++;
         [self loadDate];
     }];
-    
-    [self.homeCollectionVC.collectionView.mj_header beginRefreshing];
-    
+    [self.homeCollectionVC setMj_headerBlock:^{
+        self.page = 1;
+        [self loadDate];
+    }];
 }
-
-
 
 #pragma mark - CollectionVC
 
 - (void)setCollectionVC {
     MTHomeCollectionVC * homeCollectionVC = [[MTHomeCollectionVC alloc]init];
     self.homeCollectionVC = homeCollectionVC;
-    //MARK: 必须要
-//    [self.view addSubview:homeCollectionVC.collectionView];
+    //MARK: ---------- 注意这里只要加入View 给self就可以，这样就可以进行collctionView 的view添加子控件了
     [self.view addSubview:homeCollectionVC.view];
     [self addChildViewController:homeCollectionVC];
     [homeCollectionVC didMoveToParentViewController:self];
     homeCollectionVC.collectionView.frame = self.view.frame;
 }
-
-
 
 #pragma mark - NavigationBar
 
@@ -377,6 +378,8 @@
     [self.districtNavView changeValueWithTitle:cityDistrictTitle andSubTitle:districtTitle];
 }
 
+
+
 //MARK: 监听到分类改变
 - (void)categoryDidChenge: (NSNotification *)noti {
     //4.dismiss
@@ -402,6 +405,9 @@
     [self.categoryView changeValueWithTitle:mainTitle andSubTitle:subTitle];
     [self.categoryView changeIconWithNormalStr:icon andHighlightedStr:highlighted_icon];
 }
+
+
+
 
 //MARK: 注销通知
 - (void)dealloc{
@@ -443,6 +449,83 @@
 }
 
 
+#pragma mark - 菜单栏的添加
+- (void)setupMenu {
+    //开始的菜单按钮
+    AwesomeMenuItem *startItem = [[AwesomeMenuItem alloc]initWithImage:[UIImage imageNamed:@"icon_pathMenu_background_normal"] highlightedImage:[UIImage imageNamed:@"icon_pathMenu_background_highlighted"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_mainMine_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"]];
+    //我的
+    AwesomeMenuItem *mineItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_mine_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_mine_highlighted"]];
+    // 收藏
+    AwesomeMenuItem *collectItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_collect_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_collect_highlighted"]];
+    // 预览
+    AwesomeMenuItem *scanItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_scan_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_scan_highlighted"]];
+    // 更多
+    AwesomeMenuItem *moreItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_more_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_more_highlighted"]];
+    
+    //2.添加
+    NSArray *itemArray = @[mineItem,collectItem,scanItem,moreItem];
+    AwesomeMenu *menu = [[AwesomeMenu alloc]initWithFrame:CGRectZero startItem:startItem menuItems:itemArray];
+    
+    //3.添加到view
+    [self.view addSubview:menu];
+    //4.设置约束 ： 注意这里必须先设置起点位置
+    menu.startPoint = CGPointMake(0, 0);
+    [menu mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(50);
+        make.bottom.offset(-100);
+    }];
+    
+    //5.设置不能专项
+    menu.rotateAddButton = false;
+    //6.设置子菜单的角度
+    menu.menuWholeAngle = M_PI_2;
+    //7.设置透明度
+    menu.alpha = 0.6;
+    //8.设置代理
+    menu.delegate = self;
+}
+//MARK: 菜单 代理方法的实现
+//开启
+-(void)awesomeMenuWillAnimateOpen:(AwesomeMenu *)menu {
+    //调整透明度
+    [UIView animateWithDuration:.2 animations:^{
+        menu.alpha = 1;
+        menu.contentImage = [UIImage imageNamed:@"icon_pathMenu_cross_normal"];
+        menu.highlightedContentImage = [UIImage imageNamed:@"icon_pathMenu_cross_highlighted"];
+    }];
+    
+}
+//关闭
+- (void)awesomeMenuWillAnimateClose:(AwesomeMenu *)menu {
+    [UIView animateWithDuration:.2 animations:^{
+        menu.alpha = .6;
+        menu.contentImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_normal"];
+        menu.highlightedContentImage = [UIImage imageNamed:@"icon_pathMenu_cross_highlighted"];
+    }];
+}
+//点击事件
+- (void)awesomeMenu:(AwesomeMenu *)menu didSelectIndex:(NSInteger)idx {
+    switch (idx) {
+        case 0:
+            NSLog(@"我的")
+            break;
+        case 1:{
+        
+        }
+            NSLog(@"收藏")
+            break;
+        case 2:
+            NSLog(@"预览")
+            break;
+        case 3:
+            NSLog(@"更多")
+            break;
+            
+        default:
+            NSLog(@"没有")
+            break;
+    }
+}
 
 #pragma mark - ------其他的一些方法
 //MARK: 左边的item 的modal事件的封装
@@ -460,82 +543,34 @@
     [self presentViewController:VC animated:true completion:nil];
 }
 
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 
-//- (UIImageView *)noDataImage {
-//    if (!_noDataImage) {
-//        _noDataImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_deals_empty"]];
-//        _noDataImage.hidden = true;
-//    }
-//    return _noDataImage;
-//}
-
-#pragma mark - 添加菜单
-- (void)setupMenu {
-    //1.创建按钮
-    // 开始按钮
-  AwesomeMenuItem *startItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"icon_pathMenu_background_normal"] highlightedImage:[UIImage imageNamed:@"icon_pathMenu_background_highlighted"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_mainMine_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"]];
-    
-    // 我
-    AwesomeMenuItem *mineItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_mine_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_mine_highlighted"]];
-    // 收藏
-    AwesomeMenuItem *collectItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_collect_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_collect_highlighted"]];
-    // 预览
-    AwesomeMenuItem *scanItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_scan_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_scan_highlighted"]];
-    // 更多
-    AwesomeMenuItem *moreItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_more_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_more_highlighted"]];
-    //子button数组
-    NSArray *itemArray = @[mineItem,collectItem,scanItem,moreItem];
-    
-    //2.实例化
-    AwesomeMenu *menu = [[AwesomeMenu alloc]initWithFrame:CGRectZero startItem:startItem menuItems:itemArray];
-    //3.menu 透明度
-    menu.alpha = 0.5;
-    //4.设置代理
-    menu.delegate = self;
-    //5.设置不能转头
-    menu.rotateAddButton = false;
-    //6.添加
-    [self.view addSubview:menu];
-    //7.设置开始位置
-    menu.menuWholeAngle = M_PI_2;
-    //7.设置位置
-    menu.startPoint = CGPointMake(0, 0);//必须先设置这个不然约束设置不起作用
-    [menu mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.view.mas_left).offset(50);
-        make.bottom.equalTo(self.view.mas_bottom).offset(-100);
-    }];
-}
-
-//MARK: 代理方法
-- (void)awesomeMenuWillAnimateOpen:(AwesomeMenu *)menu {
-    [UIView animateWithDuration:0.2 animations:^{
-       //1.改变透明度
-        menu.alpha = 1;
-//        menu.image = [UIImage imageNamed:@"icon_pathMenu_cross_normal"];
-        menu.contentImage = [UIImage imageNamed:@"icon_pathMenu_cross_normal"];
-//        menu.highlightedImage = [UIImage imageNamed:@"icon_pathMenu_cross_highlighted"];
-        menu.highlightedContentImage = [UIImage imageNamed:@"icon_pathMenu_cross_highlighted"];
-    }];
-}
-
-- (void)awesomeMenuWillAnimateClose:(AwesomeMenu *)menu{
-    [UIView animateWithDuration:0.2 animations:^{
-        //1.改变透明度
-        menu.alpha = 0.5;
-//        menu.image = [UIImage imageNamed:@"icon_pathMenu_mainMine_normal"];
-        menu.contentImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_normal"];
-//        menu.highlightedImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"];
-        menu.highlightedContentImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"];
-    }];
+- (UIImageView *)noDataImage {
+    if (!_noDataImage) {
+        _noDataImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_deals_empty"]];
+        _noDataImage.hidden = true;
+    }
+    return _noDataImage;
 }
 
 
 
 
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
 
 @end

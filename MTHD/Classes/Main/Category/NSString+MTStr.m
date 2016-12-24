@@ -15,7 +15,6 @@
     if ([str containsString:@".00"]) {
         return [str stringByReplacingOccurrencesOfString:@".00" withString:@""];
     }
-    
     return str;
 }
 @end

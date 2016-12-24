@@ -8,6 +8,7 @@
 
 #import "MTHomeCell.h"
 #import "MTHomeCellModel.h"
+#import "MTLabel.h"
 
 @interface MTHomeCell ()
 //**背景图片*/
@@ -21,7 +22,7 @@
 //**现价*/
 @property (nonatomic,strong) UILabel *label_Current;
 //**原价*/
-@property (nonatomic,strong) UILabel *label_List;
+@property (nonatomic,strong) MTLabel *label_List;
 //**已售*/
 @property (nonatomic,strong) UILabel *label_Number;
 //**新单*/
@@ -147,10 +148,9 @@
     return _label_Current;
 }
 //原价
-- (UILabel *)label_List {
+- (MTLabel *)label_List {
     if (!_label_List) {
-        _label_List = [[UILabel alloc]init];
-        _label_List.text = @"原价";
+        _label_List = [MTLabel labelWithStr:@"原价"];
         _label_List.font = [UIFont systemFontOfSize:14];
         _label_List.textColor = [UIColor darkGrayColor];
     }

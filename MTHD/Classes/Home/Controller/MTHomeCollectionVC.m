@@ -10,10 +10,11 @@
 #import "UIBarButtonItem+MTCategory.h"
 #import "MTHomeCell.h"
 #import "MJRefresh.h"
-
+#import "MTDetailsVC.h"
 
 @interface MTHomeCollectionVC ()
 @property (nonatomic,strong) UIImageView *noDataImage;
+//@property (nonatomic,assign) NSInteger page;
 @end
 
 @implementation MTHomeCollectionVC {
@@ -40,6 +41,7 @@ static NSString * const CELLID = @"CELLID";
         _itemNum_horizontal = 3;//竖屏的个数
         _itemSizeW = 305;//item 宽
         _itemSizeH = 305;//item高
+     
         self = [self initWithCollectionViewLayout:flowLayout];
     }
     return self;
@@ -50,15 +52,15 @@ static NSString * const CELLID = @"CELLID";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupUI];
+//    [self loadData];
     //集成MJRefresh
-//    [self setupRefresh];
+    [self setupMJRefresh];
 }
 
 #pragma mark - 搭建UI界面
 - (void)setupUI{
     self.collectionView.backgroundColor = MTColor(222, 222, 222);
     
-    //这里不能在View上面加 view 只能在collctionView里面
     [self.view addSubview:self.noDataImage];
     [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
@@ -73,6 +75,9 @@ static NSString * const CELLID = @"CELLID";
     //强调用一波将要横竖屏的方法
     [self viewWillTransitionToSize:CGSizeMake(kScreenW, kScreenH) withTransitionCoordinator:self.transitionCoordinator];
 }
+
+
+
 
 
 #pragma mark - 将要横屏竖屏
@@ -103,54 +108,38 @@ static NSString * const CELLID = @"CELLID";
     }
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
 
 
-#pragma mark <UICollectionViewDataSource>
+#pragma mark - 上拉下拉动画
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.modelArray.count;
+- (void)loadData{
+    //空实现loadData这样就 完成子类的接口
+    [self.collectionView.mj_header endRefreshing];
+    [self.collectionView.mj_footer endRefreshing];
+    
+}
+- (void)setupMJRefresh {
+    self.collectionView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+//        [self loadData];//结束刷新 并且刷新数据
+        if (self.mj_headerBlock) {
+            self.mj_headerBlock();
+        }
+    }];
+    
+    self.collectionView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//        [self loadData];//结束刷新 并且刷新数据
+        if (self.mj_footerBlock){
+            self.mj_footerBlock();
+        }
+    }];
+    //开始的时候有动画
+    [self.collectionView.mj_header beginRefreshing];
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    MTHomeCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CELLID forIndexPath:indexPath];
-    cell.model = self.modelArray[indexPath.item];
-    return cell;
-}
 
-#pragma mark <UICollectionViewDelegate>
-
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
 
 #pragma mark - model数据源
 - (void)setModelArray:(NSMutableArray<MTHomeCellModel *> *)modelArray{
@@ -172,6 +161,34 @@ static NSString * const CELLID = @"CELLID";
     _hiddenNoDataImage = hiddenNoDataImage;
     self.noDataImage.hidden = hiddenNoDataImage;
 }
+
+
+#pragma mark <UICollectionViewDataSource>
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+        return self.modelArray.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    MTHomeCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CELLID forIndexPath:indexPath];
+        cell.model = self.modelArray[indexPath.item];
+    
+    return cell;
+}
+
+
+#pragma mark <UICollectionViewDelegate>
+
+//MARK:选中 cell
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    //跳转一个控制器
+    MTDetailsVC *detailsVC = [[MTDetailsVC alloc]init];
+    [self presentViewController:detailsVC animated:true completion:^{
+        
+    }];
+    
+}
+
 
 @end
 

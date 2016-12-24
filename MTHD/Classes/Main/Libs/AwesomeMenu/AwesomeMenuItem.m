@@ -18,6 +18,7 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 @synthesize farPoint = _farPoint;
 @synthesize delegate  = _delegate;
 
+//初始化Button  button的image
 #pragma mark - initialization & cleaning up
 - (id)initWithImage:(UIImage *)img 
    highlightedImage:(UIImage *)himg
