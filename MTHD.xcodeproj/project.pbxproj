@@ -37,6 +37,8 @@
 		868FF96C1E0833E2003FFF61 /* MTCityVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 868FF96B1E0833E2003FFF61 /* MTCityVC.m */; };
 		868FF9701E083F2B003FFF61 /* MTDistrictVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 868FF96F1E083F2B003FFF61 /* MTDistrictVC.m */; };
 		868FF9761E086179003FFF61 /* MTCitySearchResultVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 868FF9751E086179003FFF61 /* MTCitySearchResultVC.m */; };
+		86C25C061E0D422E006AB8CD /* AwesomeMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C25C031E0D422E006AB8CD /* AwesomeMenu.m */; };
+		86C25C071E0D422E006AB8CD /* AwesomeMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 86C25C051E0D422E006AB8CD /* AwesomeMenuItem.m */; };
 		86CF67831E0C1D2B008CC4C3 /* DPAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CF677F1E0C1D2B008CC4C3 /* DPAPI.m */; };
 		86CF67841E0C1D2B008CC4C3 /* DPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CF67821E0C1D2B008CC4C3 /* DPRequest.m */; };
 		86CF67871E0C312D008CC4C3 /* NSDate+MTCompareDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CF67861E0C312D008CC4C3 /* NSDate+MTCompareDate.m */; };
@@ -101,6 +103,10 @@
 		868FF96F1E083F2B003FFF61 /* MTDistrictVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTDistrictVC.m; sourceTree = "<group>"; };
 		868FF9741E086179003FFF61 /* MTCitySearchResultVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTCitySearchResultVC.h; sourceTree = "<group>"; };
 		868FF9751E086179003FFF61 /* MTCitySearchResultVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTCitySearchResultVC.m; sourceTree = "<group>"; };
+		86C25C021E0D422E006AB8CD /* AwesomeMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwesomeMenu.h; sourceTree = "<group>"; };
+		86C25C031E0D422E006AB8CD /* AwesomeMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwesomeMenu.m; sourceTree = "<group>"; };
+		86C25C041E0D422E006AB8CD /* AwesomeMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwesomeMenuItem.h; sourceTree = "<group>"; };
+		86C25C051E0D422E006AB8CD /* AwesomeMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwesomeMenuItem.m; sourceTree = "<group>"; };
 		86CF677E1E0C1D2B008CC4C3 /* DPAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPAPI.h; sourceTree = "<group>"; };
 		86CF677F1E0C1D2B008CC4C3 /* DPAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPAPI.m; sourceTree = "<group>"; };
 		86CF67801E0C1D2B008CC4C3 /* DPConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPConstants.h; sourceTree = "<group>"; };
@@ -315,6 +321,7 @@
 		863032C81E0556D70093D6C5 /* Libs（其他的类文件） */ = {
 			isa = PBXGroup;
 			children = (
+				86C25C011E0D422E006AB8CD /* AwesomeMenu */,
 			);
 			name = "Libs（其他的类文件）";
 			path = Libs;
@@ -380,6 +387,17 @@
 				868FF9751E086179003FFF61 /* MTCitySearchResultVC.m */,
 			);
 			name = MTCityVC;
+			sourceTree = "<group>";
+		};
+		86C25C011E0D422E006AB8CD /* AwesomeMenu */ = {
+			isa = PBXGroup;
+			children = (
+				86C25C021E0D422E006AB8CD /* AwesomeMenu.h */,
+				86C25C031E0D422E006AB8CD /* AwesomeMenu.m */,
+				86C25C041E0D422E006AB8CD /* AwesomeMenuItem.h */,
+				86C25C051E0D422E006AB8CD /* AwesomeMenuItem.m */,
+			);
+			path = AwesomeMenu;
 			sourceTree = "<group>";
 		};
 		86CF677D1E0C1D2B008CC4C3 /* dianpingapi */ = {
@@ -539,6 +557,7 @@
 				865F05AF1E094CE50063AD01 /* MTCityGroupModel.m in Sources */,
 				862D3AB51E0A1FB800FDFFD9 /* MTCityModel.m in Sources */,
 				86CF67831E0C1D2B008CC4C3 /* DPAPI.m in Sources */,
+				86C25C061E0D422E006AB8CD /* AwesomeMenu.m in Sources */,
 				868FF95B1E081748003FFF61 /* MTCategoryModel.m in Sources */,
 				868FF9551E07FE80003FFF61 /* MTCategoryVC.m in Sources */,
 				868FF96C1E0833E2003FFF61 /* MTCityVC.m in Sources */,
@@ -555,6 +574,7 @@
 				863032CC1E05574F0093D6C5 /* MTBaseNAV.m in Sources */,
 				863032D21E055B240093D6C5 /* UIImage+MTGategoryImage.m in Sources */,
 				863032DF1E05680A0093D6C5 /* UIBarButtonItem+MTCategory.m in Sources */,
+				86C25C071E0D422E006AB8CD /* AwesomeMenuItem.m in Sources */,
 				862D3AC31E0A8D4C00FDFFD9 /* MTButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

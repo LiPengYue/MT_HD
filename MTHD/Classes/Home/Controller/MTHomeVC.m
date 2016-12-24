@@ -19,8 +19,10 @@
 #import "MTHomeViewModel.h"
 #import "MJRefresh.h"
 #import "MTSortModel.h"
+#import "AwesomeMenu.h"
+#import "AwesomeMenuItem.h"
 
-@interface MTHomeVC ()
+@interface MTHomeVC () <AwesomeMenuDelegate>
 @property (nonatomic,strong) MTHomeNACView *categoryView;//分组
 @property (nonatomic,strong) MTHomeNACView *districtNavView;//城市
 @property (nonatomic,strong) MTHomeNACView *sortNavView;//排序
@@ -35,7 +37,7 @@
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 
-@property (nonatomic,strong) UIImageView *noDataImage;
+//@property (nonatomic,strong) UIImageView *noDataImage;
 
 @property (nonatomic,weak) MTHomeCollectionVC *homeCollectionVC;
 @end
@@ -47,6 +49,8 @@
     [self setupUI];
 }
 
+
+
 #pragma mark - 搭建UI界面
 - (void)setupUI{
     //设置出事值
@@ -57,11 +61,13 @@
     [self observeNotification];//监听通知的方法
     [self loadDate];//加载数据
     [self setupRefresh];//加动画
-    [self.view addSubview:self.noDataImage];
-    [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self.view);
-    }];
+    [self setupMenu];//天价菜单
+//    [self.view addSubview:self.noDataImage];
+//    [self.noDataImage mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.center.equalTo(self.view);
+//    }];
 }
+
 
 
 #pragma mark - loadDate
@@ -94,7 +100,6 @@
     //分页
     params[@"page"] = @(self.page);
     
-    
     NSLog(@"%@",params);
     
     [[MTHomeViewModel sharedHomeViewModel] loadHomeNetDataWithCityName:params andModelArrayBlock:^(BOOL isSucceed, NSArray<MTHomeCellModel *> *modelArray) {
@@ -109,14 +114,15 @@
              self.homeCollectionVC.modelArray = self.dataArray;
         }
         //判断是否隐藏collctionView的NoDataImage
-//        self.homeCollectionVC.hiddenNoDataImage = self.dataArray.count != 0;
-        self.noDataImage.hidden = self.dataArray.count;
+        self.homeCollectionVC.hiddenNoDataImage = self.dataArray.count;
+//        self.noDataImage.hidden = self.dataArray.count;
         
         //结束加载
         [self.homeCollectionVC.collectionView.mj_footer endRefreshing];
         [self.homeCollectionVC.collectionView.mj_header endRefreshing];
     }];
 }
+
 
 
 #pragma mark - refrech
@@ -139,6 +145,8 @@
     
 }
 
+
+
 #pragma mark - CollectionVC
 
 - (void)setCollectionVC {
@@ -151,6 +159,8 @@
     [homeCollectionVC didMoveToParentViewController:self];
     homeCollectionVC.collectionView.frame = self.view.frame;
 }
+
+
 
 #pragma mark - NavigationBar
 
@@ -367,8 +377,6 @@
     [self.districtNavView changeValueWithTitle:cityDistrictTitle andSubTitle:districtTitle];
 }
 
-
-
 //MARK: 监听到分类改变
 - (void)categoryDidChenge: (NSNotification *)noti {
     //4.dismiss
@@ -394,9 +402,6 @@
     [self.categoryView changeValueWithTitle:mainTitle andSubTitle:subTitle];
     [self.categoryView changeIconWithNormalStr:icon andHighlightedStr:highlighted_icon];
 }
-
-
-
 
 //MARK: 注销通知
 - (void)dealloc{
@@ -455,34 +460,82 @@
     [self presentViewController:VC animated:true completion:nil];
 }
 
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 
-- (UIImageView *)noDataImage {
-    if (!_noDataImage) {
-        _noDataImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_deals_empty"]];
-        _noDataImage.hidden = true;
-    }
-    return _noDataImage;
+//- (UIImageView *)noDataImage {
+//    if (!_noDataImage) {
+//        _noDataImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_deals_empty"]];
+//        _noDataImage.hidden = true;
+//    }
+//    return _noDataImage;
+//}
+
+#pragma mark - 添加菜单
+- (void)setupMenu {
+    //1.创建按钮
+    // 开始按钮
+  AwesomeMenuItem *startItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"icon_pathMenu_background_normal"] highlightedImage:[UIImage imageNamed:@"icon_pathMenu_background_highlighted"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_mainMine_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"]];
+    
+    // 我
+    AwesomeMenuItem *mineItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_mine_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_mine_highlighted"]];
+    // 收藏
+    AwesomeMenuItem *collectItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_collect_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_collect_highlighted"]];
+    // 预览
+    AwesomeMenuItem *scanItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_scan_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_scan_highlighted"]];
+    // 更多
+    AwesomeMenuItem *moreItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] highlightedImage:[UIImage imageNamed:@"bg_pathMenu_black_normal"] ContentImage:[UIImage imageNamed:@"icon_pathMenu_more_normal"] highlightedContentImage:[UIImage imageNamed:@"icon_pathMenu_more_highlighted"]];
+    //子button数组
+    NSArray *itemArray = @[mineItem,collectItem,scanItem,moreItem];
+    
+    //2.实例化
+    AwesomeMenu *menu = [[AwesomeMenu alloc]initWithFrame:CGRectZero startItem:startItem menuItems:itemArray];
+    //3.menu 透明度
+    menu.alpha = 0.5;
+    //4.设置代理
+    menu.delegate = self;
+    //5.设置不能转头
+    menu.rotateAddButton = false;
+    //6.添加
+    [self.view addSubview:menu];
+    //7.设置开始位置
+    menu.menuWholeAngle = M_PI_2;
+    //7.设置位置
+    menu.startPoint = CGPointMake(0, 0);//必须先设置这个不然约束设置不起作用
+    [menu mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view.mas_left).offset(50);
+        make.bottom.equalTo(self.view.mas_bottom).offset(-100);
+    }];
+}
+
+//MARK: 代理方法
+- (void)awesomeMenuWillAnimateOpen:(AwesomeMenu *)menu {
+    [UIView animateWithDuration:0.2 animations:^{
+       //1.改变透明度
+        menu.alpha = 1;
+//        menu.image = [UIImage imageNamed:@"icon_pathMenu_cross_normal"];
+        menu.contentImage = [UIImage imageNamed:@"icon_pathMenu_cross_normal"];
+//        menu.highlightedImage = [UIImage imageNamed:@"icon_pathMenu_cross_highlighted"];
+        menu.highlightedContentImage = [UIImage imageNamed:@"icon_pathMenu_cross_highlighted"];
+    }];
+}
+
+- (void)awesomeMenuWillAnimateClose:(AwesomeMenu *)menu{
+    [UIView animateWithDuration:0.2 animations:^{
+        //1.改变透明度
+        menu.alpha = 0.5;
+//        menu.image = [UIImage imageNamed:@"icon_pathMenu_mainMine_normal"];
+        menu.contentImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_normal"];
+//        menu.highlightedImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"];
+        menu.highlightedContentImage = [UIImage imageNamed:@"icon_pathMenu_mainMine_highlighted"];
+    }];
 }
 
 
 
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

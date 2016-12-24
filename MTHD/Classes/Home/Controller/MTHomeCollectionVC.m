@@ -162,7 +162,7 @@ static NSString * const CELLID = @"CELLID";
 - (UIImageView *)noDataImage {
     if (!_noDataImage) {
         _noDataImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"icon_deals_empty"]];
-        _noDataImage.hidden = false;
+        _noDataImage.hidden = true;
     }
     return _noDataImage;
 }
@@ -170,7 +170,7 @@ static NSString * const CELLID = @"CELLID";
 #pragma mark - 是否隐藏noDataImage
 -(void)setHiddenNoDataImage:(BOOL)hiddenNoDataImage{
     _hiddenNoDataImage = hiddenNoDataImage;
-    self.noDataImage.hidden = false;
+    self.noDataImage.hidden = hiddenNoDataImage;
 }
 
 @end
